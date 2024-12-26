@@ -2,6 +2,24 @@ const canvas = document.getElementById('signature-canvas');
 const ctx = canvas.getContext('2d');
 let drawing = false;
 
+// Function to adjust canvas size to match the device pixel ratio
+function resizeCanvas() {
+  const ratio = window.devicePixelRatio || 1; // Get the device's pixel ratio (use 1 if not available)
+  const width = canvas.offsetWidth;  // Get the canvas width as seen by the user (CSS size)
+  const height = canvas.offsetHeight; // Get the canvas height
+
+  // Set canvas size to match the pixel ratio
+  canvas.width = width * ratio;
+  canvas.height = height * ratio;
+
+  // Scale the drawing context to match the canvas size
+  ctx.scale(ratio, ratio); 
+}
+
+// Adjust canvas size when the window is resized or on load
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas(); // Initially set up the canvas size
+
 // Set up the pencil tool appearance
 ctx.lineWidth = 3;          // Set the thickness of the pencil
 ctx.lineCap = 'round';      // Create rounded line ends (mimics a pencil's drawing effect)
@@ -14,12 +32,12 @@ function getCanvasCoordinates(e) {
 
   if (e.touches) {
     // For touch events (mobile), use the first touch point
-    x = e.touches[0].clientX - rect.left;
-    y = e.touches[0].clientY - rect.top;
+    x = (e.touches[0].clientX - rect.left) * (canvas.width / rect.width); // Scale coordinates
+    y = (e.touches[0].clientY - rect.top) * (canvas.height / rect.height); // Scale coordinates
   } else {
     // For mouse events (desktop)
-    x = e.offsetX;
-    y = e.offsetY;
+    x = (e.offsetX) * (canvas.width / rect.width);  // Scale coordinates
+    y = (e.offsetY) * (canvas.height / rect.height); // Scale coordinates
   }
 
   return { x, y };
@@ -47,7 +65,6 @@ canvas.addEventListener('mouseout', () => drawing = false);
 // Touch events for mobile devices
 canvas.addEventListener('touchstart', (e) => {
   e.preventDefault(); // Prevent the default touch behavior, like scrolling
-
   drawing = true;
   const { x, y } = getCanvasCoordinates(e);
   ctx.beginPath();
@@ -56,7 +73,6 @@ canvas.addEventListener('touchstart', (e) => {
 
 canvas.addEventListener('touchmove', (e) => {
   e.preventDefault(); // Prevent the default touch behavior, like scrolling
-
   if (drawing) {
     const { x, y } = getCanvasCoordinates(e);
     ctx.lineTo(x, y);
