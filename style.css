@@ -46,8 +46,12 @@ body {
   }
   
   #signature-canvas {
-    cursor: url('pencil-cursor.png'), auto;
+    width: 100%;  /* Makes the canvas full-width, responsive */
+    height: 250px; /* Fixed height for the canvas */
+    border: 1px solid #ddd;
+    touch-action: none;  /* Disable gesture actions (important for mobile devices) */
   }
+  
   
   
   .signature-actions {
