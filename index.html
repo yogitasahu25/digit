@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Form with Digital Signature</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="form-container">
+    <h2>Form with Digital Signature</h2>
+    <form id="signature-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+      
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+      
+      <label for="signature">Digital Signature:</label>
+      <div class="signature-pad">
+        <canvas id="signature-canvas"></canvas>
+        <div class="signature-actions">
+          <button type="button" id="clear-signature">Clear</button>
+        </div>
+      </div>
+      
+      <input type="hidden" id="signature-data" name="signature">
+      <button type="submit">Submit</button>
+    </form>
+  </div>
+  <script src="script.js"></script>
+</body>
+</html>
