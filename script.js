@@ -7,22 +7,62 @@ ctx.lineWidth = 3;          // Set the thickness of the pencil
 ctx.lineCap = 'round';      // Create rounded line ends (mimics a pencil's drawing effect)
 ctx.strokeStyle = '#000';   // Set the default pencil color to black
 
-// Event listeners for drawing on the canvas (using the "pencil")
+// Helper function to get the canvas coordinates based on either mouse or touch event
+function getCanvasCoordinates(e) {
+  let rect = canvas.getBoundingClientRect();
+  let x, y;
+  
+  if (e.touches) {
+    // For touch events (mobile), use the first touch point
+    x = e.touches[0].clientX - rect.left;
+    y = e.touches[0].clientY - rect.top;
+  } else {
+    // For mouse events (desktop)
+    x = e.offsetX;
+    y = e.offsetY;
+  }
+  
+  return { x, y };
+}
+
+// Mouse events for desktop devices
 canvas.addEventListener('mousedown', (e) => {
   drawing = true;
+  const { x, y } = getCanvasCoordinates(e);
   ctx.beginPath();
-  ctx.moveTo(e.offsetX, e.offsetY);
+  ctx.moveTo(x, y);
 });
 
 canvas.addEventListener('mousemove', (e) => {
   if (drawing) {
-    ctx.lineTo(e.offsetX, e.offsetY);
+    const { x, y } = getCanvasCoordinates(e);
+    ctx.lineTo(x, y);
     ctx.stroke();
   }
 });
 
 canvas.addEventListener('mouseup', () => (drawing = false));
 canvas.addEventListener('mouseout', () => (drawing = false));
+
+// Touch events for mobile devices
+canvas.addEventListener('touchstart', (e) => {
+  e.preventDefault(); // Prevent the default touch action (like scrolling)
+  drawing = true;
+  const { x, y } = getCanvasCoordinates(e);
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+});
+
+canvas.addEventListener('touchmove', (e) => {
+  if (drawing) {
+    const { x, y } = getCanvasCoordinates(e);
+    ctx.lineTo(x, y);
+    ctx.stroke();
+  }
+});
+
+canvas.addEventListener('touchend', () => (drawing = false));
+canvas.addEventListener('touchcancel', () => (drawing = false));
 
 // Clear the signature canvas
 document.getElementById('clear-signature').addEventListener('click', () => {
